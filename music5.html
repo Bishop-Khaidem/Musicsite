@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #spotify-page {
+            display: none;
+        }
+        
+        #page-toggle:checked ~ #spotify-page {
+            display: block;
+        }
+        
+        #page-toggle:checked ~ #signup-page {
+            display: none;
+        }
+        
+        #signup-page {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .signup-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        
+        .signup-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .signup-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .signup-container input[type="text"],
+        .signup-container input[type="email"],
+        .signup-container input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1db954;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .signup-container button:hover {
+            background-color: #17a44b;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .login-link label {
+            color: #1db954;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        #spotify-page {
+            background-color: #121212;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1db954;
+            padding: 1rem 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #000;
+        }
+        
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 3rem 2rem;
+        }
+        
+        .hero-text {
+            max-width: 50%;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            background-color: #1db954;
+            padding: 0.7rem 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background-color: #17a44b;
+        }
+        
+        section {
+            padding: 2rem;
+        }
+        
+        section h2 {
+            margin-bottom: 1rem;
+            color: #1db954;
+        }
+        
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .horizontal-scroll .song-card {
+            flex: 0 0 auto;
+            width: 150px;
+            scroll-snap-align: start;
+        }
+        
+        .song-card {
+            background-color: #282828;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .song-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .song-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .song-title {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        
+        .song-artist {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+        
+        footer {
+            background-color: #1db954;
+            color: #000;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .back-to-signup {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            text-decoration: none;
+            background-color: #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .back-to-signup:hover {
+            background-color: #555;
+        }
+        
+        #page-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="page-toggle">
+    
+    <div id="signup-page">
+        <div class="signup-container">
+            <h2>Sign In</h2>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="button" onclick="document.getElementById('page-toggle').checked = true;">Sign In</button>
+                
+                <div class="login-link">
+                    Don't have an account? <label for="page-toggle">Sign Up</label>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="spotify-page">
+        <a href="#" class="back-to-signup"><label for="page-toggle">Sign Out</label></a>
+        
+        <header class="navbar">
+            <div class="logo">Spotify</div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Premium</a></li>
+                <li><a href="#">Library</a></li>
+            </ul>
+        </header>
+
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Welcome to Spotify</h1>
+                <p>Discover the latest hits and timeless classics.</p>
+                <a href="#" class="btn">Go Premium</a>
+            </div>
+        </section>
+
+        <section>
+            <h2>Premium</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card">
+                    <img src="0905a20a1a77c31438384967de0e2b30.jpg">
+                    <div class="song-title">No Ads with Premium</div>
+                    <div class="song-artist">Enjoy uninterrupted music</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Trending</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card"><source src="Lehrein.mp3" type="audio/mpeg"><img src="IMG_20250409_175827.jpg"><div class="song-title">Timeless</div><div class="song-artist">The Weeknd,playboi carti</div>
+                  audio controls>        
+                </div>
+                <div class="song-card"><img src="IMG_20250409_175743.jpg"><div class="song-title">Luther</div><div class="song-artist">Kendrick lamar,SZA</div></div>
+                <div class="song-card"><img src="IMG_20250409_175721.jpg"><div class="song-title">APT.</div><div class="song-artist">ROSE,bruno mars</div></div>
+                <div class="song-card"><img src="IMG_20250409_175805.jpg"><div class="song-title">Not like us</div><div class="song-artist">Kendrick lumar</div></div>
+                <div class="song-card"><img src="IMG_20250409_175700.jpg"><div class="song-title">All i want for chrismast is you</div><div class="song-artist">Mariah carey</div></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Best of Artists</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card"><img src="IMG_20250409_181722.jpg"><div class="song-title">This is aboy ningthouja</div><div class="song-artist">Aboy Ningthouja</div></div>
+                <div class="song-card"><img src="IMG_20250409_181639.jpg"><div class="song-title">This is Chingkhei changammayum</div><div class="song-artist">Chingkhei changammayum</div></div>
+                <div class="song-card"><img src="IMG_20250409_181749.jpg"><div class="song-title">This is scarxiom</div><div class="song-artist">Scarxiom</div></div>
+                <div class="song-card"><img src="IMG_20250409_181852.jpg"><div class="song-title">This is Meewakching</div><div class="song-artist">Meeeakching</div></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Popular Radio</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card"><img src="IMG_20250408_114553.jpg"><div class="song-title">Sweets</div><div class="song-artist">Amitabh Bhattacharya,Amit Trivedi,Ankit Tiwari</div></div>
+                <div class="song-card"><img src="IMG_20250408_114755.jpg"><div class="song-title">Chill Vibes</div><div class="song-artist">Rex orange county, Ricky Montgomery,the walters</div></div>
+                <div class="song-card"><img src="IMG_20250408_114840.jpg"><div class="song-title">Cool Radio</div><div class="song-artist">Aboy ningthouja,life in limbo,shei-Huum, innocent eyes </div></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Popular Songs & Singles</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card"><img src="IMG_20250409_145229.jpg"><div class="song-title">Aashiqui 2</div><div class="song-artist">Mithoon,Ankit Tiwari,jeet</div></div>
+                <div class="song-card"><img src="IMG_20250409_145205.jpg"><div class="song-title">Ultimate love song</div><div class="song-artist">Arjit Singh</div></div>
+                <div class="song-card"><img src="IMG_20250409_145142.jpg"><div class="song-title">Glory</div><div class="song-artist">Yo Yo honey singh</div></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Featured Chart</h2>
+            <div class="horizontal-scroll">
+                <div class="song-card"><img src="IMG_20250409_144151.jpg"><div class="song-title">Hot Hits Punjabi</div><div class="song-artist">yo yo honey sing,karan aujla,diljit sosanh</div></div>
+                <div class="song-card"><img src="IMG_20250409_144124.jpg"><div class="song-title">Latest  telegu</div><div class="song-artist">G.V.Prakash,Bheems Ceciloreo,heshan</div></div>
+                <div class="song-card"><img src="IMG_20250409_144220.jpg"><div class="song-title">Hot Hits Tamil</div><div class="song-artist">Anirudh Ravichander,G.V.Prakash,
+                    Santhosh</div></div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Created by [BISHOP KHAIDEM] | NIELIT Akampat | Web Developer</p>
+        </footer>
+        <footer style="background-color: #1db954; color: #000; text-align: center; padding: 1rem;">
+            &copy; 2025 Bishop Khaidem. All rights reserved.
+        </footer>
+    </div>
+</body>
+</html>
